@@ -41,7 +41,7 @@ int r1Active = 0;
 int r2Active = 0;
 byte write1 = 190; //instantiated to zero for victor speed controllers
 byte write2 = 190; //to be written using analogWrite()
-float redFac = .25; //reduce motor outputs
+float redFac = .35; //reduce motor outputs
 int lBias = 0;
 int rBias = 0;
 //int c = 3; //This appears to be unsused
@@ -88,7 +88,6 @@ void loop()
                 counter = 0;
             }
         }
-        Serial.println(counter);
         if(counter == LBIT) // first byte in data frame is Motor1 Speed value
         {
             inputArray[M1] = SerialData;       
@@ -105,7 +104,7 @@ void loop()
             }
             else
             {
-                redFac = .25;
+                redFac = .35;
             }
         }
         else if(counter == L2BIT)
@@ -116,7 +115,7 @@ void loop()
 			}
 			else
 			{
-				redFac = .25;
+				redFac = .35;
 			}
         }
         else if(counter > 11) // if counter is greater than 11 something is wrong 
@@ -129,6 +128,11 @@ void run ()
 {
     write1 = (byte)(190-((redFac*(inputArray[M1]-190))));
     write2 = (byte)(190+((redFac*(inputArray[M2]-190))));
+    int out1 = inputArray[M1];
+    int out2 = inputArray[M2];
+    Serial.print(out1);
+    Serial.print("    ");
+    Serial.println(out2);
     analogWrite(MOTOR1,write1);
     analogWrite(MOTOR2,write2);
 }
@@ -137,6 +141,6 @@ void failsafe(){
     inputArray[M1] = 190;
     inputArray[M2] = 190;
     counter = 0;
-    float redFac = .25;
+    float redFac = .35;
     run();
 }
