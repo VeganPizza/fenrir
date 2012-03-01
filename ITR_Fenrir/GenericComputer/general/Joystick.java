@@ -102,8 +102,6 @@ public class Joystick extends Thread {
 			}
 			EventQueue event_q = joy.getEventQueue();
 			Event joy_event = new Event();
-			System.out.println("Joy loop");
-
 			while(event_q.getNextEvent(joy_event)){
 				System.out.println("Joy Event");
 				Component comp = joy_event.getComponent();						
