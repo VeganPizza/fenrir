@@ -60,6 +60,7 @@ public class Log {
 		try{
 			//try every extension to "log-" sequentially until there is no file
 			while(true){
+				@SuppressWarnings("unused")
 				FileReader check = new FileReader(in+"-"+counter+".txt");
 				++counter;
 			}
