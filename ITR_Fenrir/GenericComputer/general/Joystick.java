@@ -20,7 +20,6 @@ package general;
 import gui.Display;
 
 import net.java.games.input.*;
-import net.java.games.input.Component.Identifier;
 
 //TODO:
 //find out if joystick is unplugged in linux
