@@ -42,12 +42,22 @@ void on_axis_change(robot_event *ev){
 // on_button_up is called when a joystick button is released
 // button is the button number
 void on_button_up(robot_event *ev) {
-  
 }
 
 // on_button_down is called when a joystick button is pressed
 // button is the button number
 void on_button_down(robot_event *ev) {	
+  static int gripper = 0;
+  if(ev->index == CON_ARM_UP){
+    digitalWrite(12,HIGH);
+  }
+  if(ev->index == CON_ARM_DOWN){
+    digitalWrite(12,LOW);
+  }
+  if(ev->index == CON_GRIP){
+    gripper = (gripper + 1) % 2;
+    digitalWrite(13,gripper);
+  }
   
 }
 
@@ -61,6 +71,10 @@ void on_motor(robot_event *ev) {
   if(ev->index == 1){
     ev->value = map(ev->value, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED);
     analogWrite(10, ev->value);
+  }
+  if(ev->index == 5){
+    ev->value = map(ev->value, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED);
+    analogWrite(11, ev->value);
   }
 }
 

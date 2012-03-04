@@ -50,7 +50,7 @@ void setPinProfile(char data){
   case 'a':
   default:
 #ifdef POWER_LED_
-    POWER_LED_PIN   = 13;    //Sets which pin should flash to indicate powered on 
+    POWER_LED_PIN   = A3;    //Sets which pin should flash to indicate powered on 
     pinMode(POWER_LED_PIN, OUTPUT); 
     pinMode(12,OUTPUT); 
 #endif
