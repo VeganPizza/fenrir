@@ -15,7 +15,7 @@
 //    with this program; if not, write to the Free Software Foundation, Inc.,
 //    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 
-package genericRobot;
+package fenrirRobot;
 
 import general.Communication;
 import general.EventEnum;
@@ -75,19 +75,23 @@ public class Events {
 	// on_axis_change is called when a joystick axis changes postion
 	// index is the axis number, value is the position of the axis from 0-255
 	// a value of 127 is center
+	int con_x=0;
+	int con_y=0;
 	public void on_axis_change(RobotEvent ev){
 		
 		if(ev.getIndex()==1){
-			int temp = (ev.getValue()-127)/4 +127;
+			int temp = (ev.getValue()-127)/2 +127;
 			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_MOTOR,(short)0,temp));
 		}
 		if(ev.getIndex()==3){
-			int temp = (((ev.getValue() - 127)*(-1)/4) + 127);
+			int temp = (((ev.getValue() - 127)*(-1)/2) + 127);
 			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_MOTOR,(short)1,temp));
 		}
 		
+		
 		/*
 		if(ev.getIndex()==1){
+		
 			con_y=ev.getValue() - 127;
 		}
 		if(ev.getIndex()==0){
@@ -106,7 +110,6 @@ public class Events {
 		}
 		else if(mot1<-127){
 			mot1=-127;
-			
 		}
 		
 		comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_MOTOR,(short)0,mot0+127));
@@ -114,16 +117,41 @@ public class Events {
 		*/
 	}
 	
+	int turbo=0;
 	// on_button_up is called when a joystick button is released
 	// button is the button number
 	public void on_button_up(RobotEvent ev){
-
+		if(ev.getIndex() == 5 || ev.getIndex() == 7){
+			turbo+=2;
+			if(turbo>4){
+				turbo=4;
+			}
+			on_axis_change(new RobotEvent(EventEnum.ROBOT_EVENT_JOY_AXIS,(short)1,con_y+127)); //turbo hack
+		}
+		comm.sendEvent(ev);
 	}
 
 	// on_button_down is called when a joystick button is pressed
 	// button is the button number
+	int launcherState = 0;
 	public void on_button_down(RobotEvent ev){
-
+		if(ev.getIndex() == 5 || ev.getIndex() == 7){
+			turbo-=2;
+			if(turbo<0){
+				turbo=0;
+			}
+			on_axis_change(new RobotEvent(EventEnum.ROBOT_EVENT_JOY_AXIS,(short)1,con_y+127)); //turbo hack
+		}
+		if(ev.getIndex() == 3){
+			launcherState = (launcherState +1)%2;
+			if(launcherState == 1){
+				comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_MOTOR,(short)5,227));
+			}
+			else{
+				comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_MOTOR,(short)5,127));
+			}
+		}
+		comm.sendEvent(ev);
 	}
 	
 	//when the d-pad is pressed
