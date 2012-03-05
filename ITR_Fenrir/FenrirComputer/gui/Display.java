@@ -88,7 +88,7 @@ public class Display {
 	private void initialize() {
 		frmItrGenericrobot = new JFrame();
 		frmItrGenericrobot.setIconImage(Toolkit.getDefaultToolkit().getImage(Display.class.getResource("/gui/logo.png")));
-		frmItrGenericrobot.setTitle("ITR Generic_Robot");
+		frmItrGenericrobot.setTitle("ITR Fenrir");
 		frmItrGenericrobot.setResizable(false);
 		frmItrGenericrobot.getContentPane().setBackground(new Color(240, 240, 240));
 		frmItrGenericrobot.setBounds(100, 100, 650, 650);

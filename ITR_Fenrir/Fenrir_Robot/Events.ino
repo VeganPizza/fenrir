@@ -72,9 +72,16 @@ void on_motor(robot_event *ev) {
     ev->value = map(ev->value, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED);
     analogWrite(10, ev->value);
   }
-  if(ev->index == 5){
-    ev->value = map(ev->value, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED);
-    analogWrite(11, ev->value);
+  //TODO FIX ROLLER
+  if(ev->index == 6){
+  	if(en->value == 0)
+  		digitalWrite(PINNUM,LOW);
+  	else{
+    	if(en->value == 100)
+    		digitalWrite(PINNUM,HIGH);
+    	if(en->value == 200)
+    		digitalWrite(PINNUM,HIGH
+    	}
   }
 }
 
