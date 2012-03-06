@@ -29,14 +29,14 @@
 
 // on_init runs when the program starts up for the first time
 void on_init(robot_queue *q) {
-    
+
 }
 
 // on_axis_change is called when a joystick axis changes postion
 // axis is the axis number, value is the position of the axis from 0-255
 // a value of 127 is center
 void on_axis_change(robot_event *ev){
-  
+
 }
 
 // on_button_up is called when a joystick button is released
@@ -47,18 +47,8 @@ void on_button_up(robot_event *ev) {
 // on_button_down is called when a joystick button is pressed
 // button is the button number
 void on_button_down(robot_event *ev) {	
-  static int gripper = 0;
-  if(ev->index == CON_ARM_UP){
-    digitalWrite(12,HIGH);
-  }
-  if(ev->index == CON_ARM_DOWN){
-    digitalWrite(12,LOW);
-  }
-  if(ev->index == CON_GRIP){
-    gripper = (gripper + 1) % 2;
-    digitalWrite(13,gripper);
-  }
-  
+
+
 }
 
 //on_motor is called when a motor speed is updated
@@ -72,16 +62,33 @@ void on_motor(robot_event *ev) {
     ev->value = map(ev->value, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED);
     analogWrite(10, ev->value);
   }
-  //TODO FIX ROLLER
+  if(ev->index == 5){
+    ev->value = map(ev->value, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED);
+    analogWrite(11,ev->value);
+    Serial.print("$");
+    send_event(ev);
+  }
   if(ev->index == 6){
-  	if(en->value == 0)
-  		digitalWrite(PINNUM,LOW);
-  	else{
-    	if(en->value == 100)
-    		digitalWrite(PINNUM,HIGH);
-    	if(en->value == 200)
-    		digitalWrite(PINNUM,HIGH
-    	}
+    if(ev->value == 0){
+      digitalWrite(12,LOW);
+      digitalWrite(13,LOW);
+      Serial.print("$");
+      send_event(ev);
+    }
+    else{
+      if(ev->value == 100){
+        digitalWrite(12,HIGH);
+        digitalWrite(13,LOW);
+        Serial.print("$");
+        send_event(ev);
+      }
+      if(ev->value == 200){
+        digitalWrite(13,HIGH);
+        digitalWrite(12,LOW);
+        Serial.print("$");
+        send_event(ev);
+      }
+    }
   }
 }
 
@@ -102,14 +109,14 @@ void on_25hz_timer(robot_event *ev){
 
 //place code that has to be run every 50hz
 void on_50hz_timer(robot_event *ev){
-  
+
 }
 
 //place code that has to be run every 100hz
 //100hz is the fastest that code should run since 
 //most sensors don't update faster than that anyway
 void on_100hz_timer(robot_event *ev){
-  
+
 }
 
 // on_command_code is called when the remote computer sends a command datagram
@@ -140,10 +147,10 @@ void on_command_code(robot_event *ev) {
     //will require a manual reset
     /*
     if(ev->index == 0 and ev->value == 0){
-      failsafe_mode(&qu); //go to failsafe first by placing everything into a safe position
-      exit(0);            //exit the program and turn off the arduino
-    } 
-    */
+     failsafe_mode(&qu); //go to failsafe first by placing everything into a safe position
+     exit(0);            //exit the program and turn off the arduino
+     } 
+     */
     break;
   case ROBOT_EVENT_CMD_REBOOT:
 #ifdef WATCHDOG_
@@ -182,3 +189,5 @@ void on_read_variable(robot_event *ev){
 
 void on_variable(robot_event *ev){
 }
+
+

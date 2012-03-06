@@ -111,5 +111,7 @@ void failsafe_mode() {
   analogWrite(3, map(127, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED));
   analogWrite(10, map(127, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED));
   analogWrite(11, map(127, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED));
+  digitalWrite(12, LOW);
+  digitalWrite(13, LOW);
 }
 

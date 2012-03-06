@@ -89,22 +89,43 @@ public class Events {
 		}
 	}
 	
-	int turbo=0;
 	// on_button_up is called when a joystick button is released
 	// button is the button number
 	public void on_button_up(RobotEvent ev){
-		if(ev.getIndex()==6||ev.getIndex()==7)
+		if(ev.getIndex()==4||ev.getIndex()==6)
 			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_MOTOR,(short)6,0));
+		if(ev.getIndex()==5){
+			shooterSpeed+=10;
+			if(shooterSpeed>255)
+				shooterSpeed = 255;
+			if(shooter)
+				comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_MOTOR,(short)5,shooterSpeed));
+		}
+		if(ev.getIndex()==7){
+			shooterSpeed-=10;
+			if(shooterSpeed<127)
+				shooterSpeed = 127;
+			if(shooter)
+				comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_MOTOR,(short)5,shooterSpeed));
+		}
 	}
 
 	// on_button_down is called when a joystick button is pressed
 	// button is the button number
-	int launcherState = 0;
+	boolean shooter = false;
+	int shooterSpeed = 127;
 	public void on_button_down(RobotEvent ev){
 		if(ev.getIndex()==6)
 			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_MOTOR,(short)6,200));
-		if(ev.getIndex()==7)
+		if(ev.getIndex()==4)
 			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_MOTOR,(short)6,100));
+		if(ev.getIndex()==1){
+			shooter = !shooter;
+			if(shooter)
+				comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_MOTOR,(short)5,shooterSpeed));
+			else
+				comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_MOTOR,(short)5,127));
+		}
 	}
 	
 	//when the d-pad is pressed
