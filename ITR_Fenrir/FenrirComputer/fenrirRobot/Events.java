@@ -88,7 +88,7 @@ public class Events {
 			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_JOY_AXIS,(short)1,temp));
 		}
 		if(ev.getIndex()==2){
-			int temp = (((ev.getValue() - 127)*(1)/2) + 127);
+			int temp = (((ev.getValue() - 127)*(1)/8) + 127);
 			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_JOY_AXIS,(short)2,temp));
 		}
 	}
