@@ -78,14 +78,18 @@ public class Events {
 	int con_x=0;
 	int con_y=0;
 	public void on_axis_change(RobotEvent ev){
-		
+		//dividing by two gives full range for victors
 		if(ev.getIndex()==1){
 			int temp = (ev.getValue()-127)/2 +127;
-			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_MOTOR,(short)0,temp));
+			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_JOY_AXIS,(short)0,temp));
 		}
 		if(ev.getIndex()==3){
-			int temp = (((ev.getValue() - 127)*(-1)/2) + 127);
-			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_MOTOR,(short)1,temp));
+			int temp = (((ev.getValue() - 127)*(1)/2) + 127);
+			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_JOY_AXIS,(short)1,temp));
+		}
+		if(ev.getIndex()==2){
+			int temp = (((ev.getValue() - 127)*(1)/2) + 127);
+			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_JOY_AXIS,(short)2,temp));
 		}
 	}
 	
@@ -108,6 +112,8 @@ public class Events {
 			if(shooter)
 				comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_MOTOR,(short)5,shooterSpeed));
 		}
+		if(ev.getIndex()==2)
+			comm.sendEvent(ev);
 	}
 
 	// on_button_down is called when a joystick button is pressed

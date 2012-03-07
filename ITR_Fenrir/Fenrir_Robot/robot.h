@@ -33,6 +33,14 @@
 #ifdef WATCHDOG_
 #include <avr/wdt.h>      //watchdog library timer loop resets the watch dog
 #endif
+//Adding quad encoder support
+//#define QUAD_ENCODER_
+
+#ifdef  QUAD_ENCODER_
+  #define encoder0PinA  2
+  #define encoder0PinB  4
+  volatile unsigned int encoder0Pos = 0;
+#endif
 
 int failsafeMode = true;
 int failsafePermanent = false;  //places the arduino in a "permanent" failsafe mode such that having a network connection will not bring it out unless ROBOT_EVENT_CMD_START is sent
