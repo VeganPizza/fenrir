@@ -87,6 +87,12 @@ public class Joystick extends Thread {
 	public void run(){
 		RobotEvent ev = new RobotEvent();
 		run = true;
+		EventQueue event_q = joy.getEventQueue();
+		Event joy_event = new Event();
+		long start_time = System.currentTimeMillis();
+		while((System.currentTimeMillis()-start_time)<2000){
+			event_q.getNextEvent(null);
+		}
 		while(run){
 			try{
 				if(joy.poll()==false){
@@ -99,8 +105,7 @@ public class Joystick extends Thread {
 				System.err.println("Can not open joystick");
 				return;
 			}
-			EventQueue event_q = joy.getEventQueue();
-			Event joy_event = new Event();
+			
 			while(event_q.getNextEvent(joy_event)){
 				Component comp = joy_event.getComponent();						
 				String command = comp.getName();
