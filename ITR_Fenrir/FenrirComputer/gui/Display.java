@@ -33,7 +33,6 @@ import general.RobotQueue;
 import net.java.games.input.*;
 import gnu.io.*;
 
-@SuppressWarnings({ "rawtypes", "unchecked" })
 public class Display {
 	
 	private RobotQueue queue = null;
