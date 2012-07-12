@@ -25,7 +25,6 @@
 // This is where each robots personal code should be placed. 
 // Feel free to add more code but try not to remove any 
 // Since most of it is used for failafe and other imporant aspects
-boolean arcade = false;
 int l_stick = 127;
 int r_stick = 127;
 // on_init runs when the program starts up for the first time
@@ -36,22 +35,12 @@ void on_init(robot_queue *q) {
 // axis is the axis number, value is the position of the axis from 0-255
 // a value of 127 is center
 void on_axis_change(robot_event *ev){
-  if(!arcade){
-    if(ev->index == 0){
-      ev->value = map(ev->value, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED);
-      analogWrite(10, ev->value);
-    }
-    if(ev->index == 1){
-      ev->value = map(ev->value, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED);
-      analogWrite(3, ev->value);
-    }
-  }
-  else{
-   if(ev->index == 0)
+
+   if(ev->index == 1)
     l_stick = ev->value;
    if(ev->index == 2)
     r_stick = ev->value;
-   int tempL = l_stick+(r_stick-127);
+   int tempL = (l_stick)+(r_stick-127);
    int tempR = l_stick-(r_stick-127);
    if(tempL<0)
      tempL = 0;
@@ -64,16 +53,11 @@ void on_axis_change(robot_event *ev){
    
    analogWrite(10, map(tempL,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
    analogWrite(3,map(tempR,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
-    
-  }
 }
 
 // on_button_up is called when a joystick button is released
 // button is the button number
 void on_button_up(robot_event *ev) {
-  if(ev->index == 2)
-  
-    arcade = !arcade;
 }
 
 // on_button_down is called when a joystick button is pressed
@@ -86,27 +70,6 @@ void on_button_down(robot_event *ev) {
 //on_motor is called when a motor speed is updated
 //index is motor number value is motor speed, 127 bias
 void on_motor(robot_event *ev) {
-  if(ev->index == 5){
-    ev->value = map(ev->value, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED);
-    analogWrite(11,ev->value);
-  }
-  if(ev->index == 6){
-    if(ev->value == 0){
-      digitalWrite(12,LOW);
-      digitalWrite(13,LOW);
-    }
-    else{
-      if(ev->value == 100){
-        digitalWrite(12,HIGH);
-        digitalWrite(13,LOW);
-      }
-      if(ev->value == 200){
-        digitalWrite(13,HIGH);
-        digitalWrite(12,LOW);
-
-      }
-    }
-  }
 }
 
 // timer that runs each second
