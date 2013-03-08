@@ -144,6 +144,15 @@ public class Events {
 	}
 	
 	public void on_variable(RobotEvent ev){
+		//System.out.println("Val "+ev.getValue());
+		/*
+		if(ev.getIndex()==4){
+			GUI.setBar(1,(int)ev.getValue()*100);
+		}
+		if(ev.getIndex()==8){
+			GUI.setBar(2,(int)ev.getValue()*100);
+		}
+		*/
 		
 	}
 	

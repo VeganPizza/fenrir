@@ -51,8 +51,8 @@ void on_axis_change(robot_event *ev){
    if(tempR>255)
      tempR = 255;
    
-   analogWrite(10, map(tempL,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
-   analogWrite(3,map(tempR,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
+   analogWrite(MOTOR_LEFT, map(tempL,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
+   analogWrite(MOTOR_RIGHT,map(tempR,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
 }
 
 // on_button_up is called when a joystick button is released
@@ -74,7 +74,29 @@ void on_motor(robot_event *ev) {
 
 // timer that runs each second
 void on_1hz_timer(robot_event *ev){
+  /*
+  robot_event event;
+  event.index = 4;
+  event.value=(int)(readVolts(CELL_4)*100);
+  event.command=ROBOT_EVENT_VAR;
+  send_event(&event);
+  */
+  Serial.print("$BATT 0 ");
+  Serial.print(readVolts(CELL_4));
+  Serial.print(" BATT 1 ");
+  Serial.print(readVolts(CELL_8));
+  Serial.print(" CURRENT ");
+  Serial.println(readCurrent());
 
+/*
+  for(int i = 4; i<8;++i){
+    Serial.print(" CELL: ");
+    Serial.print(i+1);
+    Serial.print(" Voltage: ");
+    Serial.print(readVolts(54+i));
+  }
+  Serial.print('/n');
+  */
 }
 
 // timer that runs each 100 milliseconds
@@ -170,6 +192,24 @@ void on_read_variable(robot_event *ev){
 void on_variable(robot_event *ev){
 }
 
+double readVolts(int cell){
+  int cell_norm = cell-54;//values of analog start at 54
+  int a = volt_table[cell_norm][1];
+  int b = volt_table[cell_norm][0];
+  double slope = 1/((double)(a-b));
+  return slope*(analogRead(cell)-b)+3.0;
+}
+double readVolts_norm(int cell){
+  if(cell==CELL_1||cell==CELL_5)
+    return readVolts(cell);
+  return readVolts(cell)-readVolts(cell-1);
+}
+double readCurrent(){
+  return ((analogRead(CURRENT)-CURRENT_VOE)/(double)1023)*5*100/.625;
+}
+double readPower(){
+  return (readVolts(CELL_4)+readVolts(CELL_8))/2*readCurrent();
+}
 
 
 

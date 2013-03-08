@@ -19,10 +19,11 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
+
 #define BAUD 57600
 #define SerComm Serial    //used to make it easy to change different serial ports such on the mega you can change to Serial1 or Serial2 if you want
 
-//#define TIMER_1HZ_      //1 hz and 10 hz timers still run but user functions are not called if not defined
+#define TIMER_1HZ_      //1 hz and 10 hz timers still run but user functions are not called if not defined
 #define TIMER_10HZ_ 
 #define TIMER_25HZ_     //uncomment to run code at the specifed hz
 //#define TIMER_50HZ_ 
@@ -112,3 +113,52 @@ typedef struct {
 
 void failsafe_mode(robot_queue *q);
 #endif // !EVENTS_H
+
+
+#define MOTOR_RIGHT 11
+#define MOTOR_LEFT  9
+
+#define MOTOR_RIGHT_PIN_A 3
+#define MOTOR_RIGHT_PIN_B 9
+#define MOTOR_LEFT_PIN_A 10
+#define MOTOR_LEFT_PIN_B 11
+
+#define CELL_1 A0 
+#define CELL_2 A1
+#define CELL_3 A2
+#define CELL_4 A3
+#define CELL_5 A4
+#define CELL_6 A5
+#define CELL_7 A6
+#define CELL_8 A7
+
+#define CURRENT A8
+#define CURRENT_VOE 521
+
+#define SHUTOFF_A 43
+#define SHUTOFF_B 42
+#define SHUTOFF_C 41
+#define SHUTOFF_D 40
+
+#define ENCOD1_PINA 12
+#define ENCOD1_PINB 13
+#define ENCOD2_PINA A14
+#define ENCOD2_PINB A15
+
+double readVolts(int cell);
+double readVolts_norm(int cell);
+double readCurrent();
+double readPower();
+    
+                      //3v, 4v
+int volt_table[8][2]={{631,837},//Cell 1
+                      {316,417},//Cell 2
+                      {197,261},//Cell 3
+                      {147,195},//Cell 4
+                      {634,835},//Cell 5
+                      {312,412},//Cell 6
+                      {197,261},//Cell 7
+                      {146,194}};//Cell 8
+
+
+
