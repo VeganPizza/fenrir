@@ -79,15 +79,15 @@ public class Events {
 		int temp=0;
 		//dividing by two gives full range for victors
 		if(ev.getIndex()==1){
-			temp = (ev.getValue()-127)/2+127;
+			temp = (ev.getValue()-127)/4+127;
 			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_JOY_AXIS,(short)1,temp));
-			System.out.println("Stickval: "+ev.getValue());
+			//System.out.println("Stickval: "+ev.getValue());
 
 		}
 		if(ev.getIndex()==2){
-			temp = ((ev.getValue() - 127)*(-1)/4)+127;
+			temp = ((ev.getValue() - 127)*(1)/6)+127;
 			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_JOY_AXIS,(short)2,temp));
-			System.out.println("Stickval: "+ev.getValue());
+			//System.out.println("Stickval: "+ev.getValue());
 		}
 	}
 	

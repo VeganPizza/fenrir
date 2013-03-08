@@ -125,8 +125,8 @@ void loop() {
 #define MAX_MOTOR_SPEED 154
 void failsafe_mode() {
   failsafeMode = true; 
-  analogWrite(3, map(127, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED));
-  analogWrite(10, map(127, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED));
+  analogWrite(MOTOR_LEFT, map(127, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED));
+  analogWrite(MOTOR_RIGHT, map(127, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED));
   analogWrite(11, map(127, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED));
   digitalWrite(12, LOW);
   digitalWrite(13, LOW);

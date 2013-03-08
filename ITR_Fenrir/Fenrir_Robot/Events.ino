@@ -92,12 +92,12 @@ void on_1hz_timer(robot_event *ev){
    event.command=ROBOT_EVENT_VAR;
    send_event(&event);
    */
-  Serial.print("$BATT 0 ");
-  Serial.print(readVolts(CELL_4));
-  Serial.print(" BATT 1 ");
-  Serial.print(readVolts(CELL_8));
-  Serial.print(" CURRENT ");
-  Serial.println(readCurrent());
+  SerComm.print("$BATT 0 ");
+  SerComm.print(readVolts(CELL_4));
+  SerComm.print(" BATT 1 ");
+  SerComm.print(readVolts(CELL_8));
+  SerComm.print(" CURRENT ");
+  SerComm.println(readCurrent());
 
   /*
   for(int i = 4; i<8;++i){
