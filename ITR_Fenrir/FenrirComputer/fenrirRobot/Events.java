@@ -76,14 +76,18 @@ public class Events {
 	// index is the axis number, value is the position of the axis from 0-255
 	// a value of 127 is center
 	public void on_axis_change(RobotEvent ev){
+		int temp=0;
 		//dividing by two gives full range for victors
 		if(ev.getIndex()==1){
-			int temp = (ev.getValue()-127)/4+127;
+			temp = (ev.getValue()-127)/2+127;
 			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_JOY_AXIS,(short)1,temp));
+			System.out.println("Stickval: "+ev.getValue());
+
 		}
 		if(ev.getIndex()==2){
-			int temp = ((ev.getValue() - 127)*(-1)/8)+127;
+			temp = ((ev.getValue() - 127)*(-1)/4)+127;
 			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_JOY_AXIS,(short)2,temp));
+			System.out.println("Stickval: "+ev.getValue());
 		}
 	}
 	

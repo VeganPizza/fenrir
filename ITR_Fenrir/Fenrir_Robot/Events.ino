@@ -36,23 +36,34 @@ void on_init(robot_queue *q) {
 // a value of 127 is center
 void on_axis_change(robot_event *ev){
 
-   if(ev->index == 1)
+  if(ev->index == 1)
     l_stick = ev->value;
-   if(ev->index == 2)
+  if(ev->index == 2)
     r_stick = ev->value;
-   int tempL = (l_stick)+(r_stick-127);
-   int tempR = l_stick-(r_stick-127);
-   if(tempL<0)
-     tempL = 0;
-   if(tempL>255)
-     tempL = 255;
-   if(tempR<0)
-     tempR = 0;
-   if(tempR>255)
-     tempR = 255;
-   
-   analogWrite(MOTOR_LEFT, map(tempL,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
-   analogWrite(MOTOR_RIGHT,map(tempR,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
+  int tempL = (l_stick)+(r_stick-127);
+  int tempR = l_stick-(r_stick-127);
+  if(tempL<0)
+    tempL = 0;
+  if(tempL>255)
+    tempL = 255;
+  if(tempR<0)
+    tempR = 0;
+  if(tempR>255)
+    tempR = 255;
+
+  analogWrite(MOTOR_LEFT, map(tempL,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
+  analogWrite(MOTOR_RIGHT,map(tempR,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
+  /*
+  Serial.print("$STICK: ");
+  Serial.print(tempL);
+  Serial.print(" ");
+  Serial.print(tempR);
+  Serial.println();
+  //rMotor.write(map(tempR,0,255,0,179));
+  //lMotor.write(map(tempL,0,255,0,179));
+  */
+
+
 }
 
 // on_button_up is called when a joystick button is released
@@ -76,11 +87,11 @@ void on_motor(robot_event *ev) {
 void on_1hz_timer(robot_event *ev){
   /*
   robot_event event;
-  event.index = 4;
-  event.value=(int)(readVolts(CELL_4)*100);
-  event.command=ROBOT_EVENT_VAR;
-  send_event(&event);
-  */
+   event.index = 4;
+   event.value=(int)(readVolts(CELL_4)*100);
+   event.command=ROBOT_EVENT_VAR;
+   send_event(&event);
+   */
   Serial.print("$BATT 0 ");
   Serial.print(readVolts(CELL_4));
   Serial.print(" BATT 1 ");
@@ -88,15 +99,15 @@ void on_1hz_timer(robot_event *ev){
   Serial.print(" CURRENT ");
   Serial.println(readCurrent());
 
-/*
+  /*
   for(int i = 4; i<8;++i){
-    Serial.print(" CELL: ");
-    Serial.print(i+1);
-    Serial.print(" Voltage: ");
-    Serial.print(readVolts(54+i));
-  }
-  Serial.print('/n');
-  */
+   Serial.print(" CELL: ");
+   Serial.print(i+1);
+   Serial.print(" Voltage: ");
+   Serial.print(readVolts(54+i));
+   }
+   Serial.print('/n');
+   */
 }
 
 // timer that runs each 100 milliseconds
@@ -210,6 +221,7 @@ double readCurrent(){
 double readPower(){
   return (readVolts(CELL_4)+readVolts(CELL_8))/2*readCurrent();
 }
+
 
 
 

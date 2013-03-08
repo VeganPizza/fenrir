@@ -21,6 +21,7 @@
 //fast serial isn't included directly since each person need to copy files into the arduino lbrary folder
 //will find link soon. it is located in the ardupiolt mega libary file somewhere 
 #include "robot.h"  //check the robot.h file to set configuration such as baud rate, 
+//#include <Servo.h>
 
 // All robot specific code should be placed in the events file and other files "user" created
 // Try not to change any code with files marked with a z. Those are crutial files and
@@ -29,7 +30,14 @@
 robot_queue qu;
 robot_event event;
 
+//Servo lMotor;
+//Servo rMotor;
+
+
 void setup() {
+  //lMotor.attach(MOTOR_LEFT);
+  //rMotor.attach(MOTOR_RIGHT);
+  
   setProfile('a');
   setPinProfile('a');
   // create the queue
