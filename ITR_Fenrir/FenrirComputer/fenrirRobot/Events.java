@@ -100,11 +100,17 @@ public class Events {
 	// button is the button number
 	
 	public void on_button_down(RobotEvent ev){
-		if(ev.getIndex()==2)
-			if(reverse==1)
+		if(ev.getIndex()==1){
+			if(reverse==1){
 				reverse=-1;
-			else
+				System.out.println("reversing");
+			}
+			else{
 				reverse = 1;
+				System.out.println("normal");
+			}
+		}
+
 	}
 	
 	//when the d-pad is pressed
