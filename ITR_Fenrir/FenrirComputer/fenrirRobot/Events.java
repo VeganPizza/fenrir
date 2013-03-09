@@ -26,7 +26,7 @@ import gui.Display;
  * This is where robot specific code goes
  */
 public class Events {
-	
+	int reverse = 1;
 	public Communication comm = null;
 	public Display dis = null;
 	
@@ -79,7 +79,7 @@ public class Events {
 		int temp=0;
 		//dividing by two gives full range for victors
 		if(ev.getIndex()==1){
-			temp = (ev.getValue()-127)/4+127;
+			temp = (ev.getValue()-127)*(reverse)/3+127;
 			comm.sendEvent(new RobotEvent(EventEnum.ROBOT_EVENT_JOY_AXIS,(short)1,temp));
 			//System.out.println("Stickval: "+ev.getValue());
 
@@ -100,6 +100,11 @@ public class Events {
 	// button is the button number
 	
 	public void on_button_down(RobotEvent ev){
+		if(ev.getIndex()==2)
+			if(reverse==1)
+				reverse=-1;
+			else
+				reverse = 1;
 	}
 	
 	//when the d-pad is pressed
