@@ -4,12 +4,12 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.6"/>
 	<classpathentry kind="lib" path="lib/RXTXcomm.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="ITR_Generic/lib"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Users/Zelin/Documents/GitHub/fenrir/ITR_Fenrir/lib"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/jinput.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="ITR_Fenrir/lib"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="C:/Users/Zelin/Documents/GitHub/fenrir/ITR_Fenrir/lib"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/junit-4.10.jar">
