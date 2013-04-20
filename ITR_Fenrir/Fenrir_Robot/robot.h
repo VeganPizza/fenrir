@@ -19,6 +19,7 @@
 #ifndef ROBOT_H
 #define ROBOT_H
 
+#define WM_PIN 3
 
 #define BAUD 57600
 #define SerComm Serial2    //used to make it easy to change different serial ports such on the mega you can change to Serial1 or Serial2 if you want
