@@ -21,8 +21,8 @@
 
 #define WM_PIN 3
 
-#define BAUD 57600
-#define SerComm Serial    //used to make it easy to change different serial ports such on the mega you can change to Serial1 or Serial2 if you want
+#define BAUD 19200
+#define SerComm Serial2    //used to make it easy to change different serial ports such on the mega you can change to Serial1 or Serial2 if you want
 
 #define TIMER_1HZ_      //1 hz and 10 hz timers still run but user functions are not called if not defined
 #define TIMER_10HZ_ 
