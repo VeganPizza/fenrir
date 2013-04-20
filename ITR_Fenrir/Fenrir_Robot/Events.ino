@@ -26,6 +26,10 @@
 // Feel free to add more code but try not to remove any 
 // Since most of it is used for failafe and other imporant aspects
 // on_init runs when the program starts up for the first time
+int horizontal = 0;
+int vertical = 0;
+int grip = 0;
+
 void on_init(robot_queue *q) {
 
 }
@@ -53,12 +57,45 @@ void on_axis_change(robot_event *ev){
 // on_button_up is called when a joystick button is released
 // button is the button number
 void on_button_up(robot_event *ev) {
+  switch(ev->index){
+    case 1:
+      horizontal = 0;
+      break;
+    case 2:
+      vertical = 0;
+      break;
+    case 3:
+      horizontal =0;
+      break;
+    case 4:
+      vertical = 0;
+      break;
+  }
 }
 
 // on_button_down is called when a joystick button is pressed
 // button is the button number
 void on_button_down(robot_event *ev) {
-  if(ev->index==1){
+  switch(ev->index){
+    case 1:
+      horizontal = -1;
+      break;
+    case 2:
+      vertical = -1;
+      break;
+    case 3:
+      horizontal =1;
+      break;
+    case 4:
+      vertical = 1;
+      break;
+    case 6:
+      grip = 1;
+      break;
+    case 8:
+      grip = -1;
+      break;
+  }
     
   	
 
@@ -81,6 +118,24 @@ void on_10hz_timer(robot_event *ev){
 
 //place code that has to be run every 20hz
 void on_25hz_timer(robot_event *ev){
+  if(horizontal <0){
+    //GO LEFT
+  }
+  if(horizontal > 0){
+    //GO RIGHT
+  }
+  if(vertical <0){
+    //GO DOWN
+  }
+  if(vertical >0){
+    //GO UP
+  }
+  if(grip<0){
+    //close
+  }
+  if(grip>0){
+    //open
+  }
 
 }
 
