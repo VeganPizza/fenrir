@@ -40,17 +40,19 @@ void on_init(robot_queue *q) {
 void on_axis_change(robot_event *ev){
 
   if(ev->index == 1)
-  windowMotor.writeMicroseconds(1500+2*(ev->value-127));
+
+    windowMotor.writeMicroseconds(1500+(((ev->value)<127)?10:4)*(ev->value-127));
+
 
   /*
   Serial.print("$STICK: ");
-  Serial.print(tempL);
-  Serial.print(" ");
-  Serial.print(tempR);
-  Serial.println();
-  //rMotor.write(map(tempR,0,255,0,179));
-  //lMotor.write(map(tempL,0,255,0,179));
-  */
+   Serial.print(tempL);
+   Serial.print(" ");
+   Serial.print(tempR);
+   Serial.println();
+   //rMotor.write(map(tempR,0,255,0,179));
+   //lMotor.write(map(tempL,0,255,0,179));
+   */
 
 
 }
@@ -59,18 +61,24 @@ void on_axis_change(robot_event *ev){
 // button is the button number
 void on_button_up(robot_event *ev) {
   switch(ev->index){
-    case 1:
-      horizontal = 0;
-      break;
-    case 2:
-      vertical = 0;
-      break;
-    case 3:
-      horizontal =0;
-      break;
-    case 4:
-      vertical = 0;
-      break;
+  case 1:
+    horizontal = 0;
+    break;
+  case 2:
+    vertical = 0;
+    break;
+  case 3:
+    horizontal =0;
+    break;
+  case 4:
+    vertical = 0;
+    break;
+  case 6:
+    grip = 0;
+    break;
+  case 8:
+    grip = 0;
+    break;
   }
 }
 
@@ -78,27 +86,27 @@ void on_button_up(robot_event *ev) {
 // button is the button number
 void on_button_down(robot_event *ev) {
   switch(ev->index){
-    case 1:
-      horizontal = -1;
-      break;
-    case 2:
-      vertical = -1;
-      break;
-    case 3:
-      horizontal =1;
-      break;
-    case 4:
-      vertical = 1;
-      break;
-    case 6:
-      grip = 1;
-      break;
-    case 8:
-      grip = -1;
-      break;
-    case 5:
-      reset();
-      break;
+  case 1:
+    horizontal = -1;
+    break;
+  case 2:
+    vertical = -1;
+    break;
+  case 3:
+    horizontal =1;
+    break;
+  case 4:
+    vertical = 1;
+    break;
+  case 6:
+    grip = 1;
+    break;
+  case 8:
+    grip = -1;
+    break;
+  case 5:
+    reset();
+    break;
   }
 }
 
@@ -136,20 +144,21 @@ void on_25hz_timer(robot_event *ev){
   }
   if(grip<0){
     //close
-   servo3Val=servo3Val-10;
-   servo4Val=servo4Val+10;
+    servo3Val=servo3Val+10;
+    servo4Val=servo4Val-10; 
+
   }
   if(grip>0){
     //open
-   servo3Val=servo3Val+10;
-   servo4Val=servo4Val-10;   
+    servo3Val=servo3Val-10;
+    servo4Val=servo4Val+10;
   }
-  
-   pose[SERVO1]=servo1Val;
-   pose[SERVO3]=servo3Val;
-   pose[SERVO4]=servo4Val;
-   pose[SERVO6]=servo6Val;
-   ax12writePose2(pose,id,4,300);
+
+  pose[SERVO1]=servo1Val;
+  pose[SERVO3]=servo3Val;
+  pose[SERVO4]=servo4Val;
+  pose[SERVO6]=servo6Val;
+  ax12writePose2(pose,id,4,400);
 }
 
 //place code that has to be run every 50hz
@@ -238,7 +247,7 @@ void on_variable(robot_event *ev){
 //ARM
 void reset()
 {
-  vectorLimit(83);
+  vectorLimit(85);
   pose[SERVO1] = 512;
   pose[SERVO3] = 512;
   pose[SERVO4] = 512;
@@ -291,10 +300,10 @@ void vectorLimit(int albowAngle)
   float por = P*error;
   /*
   if(por<-300)
-    por = -300;
-  if(por>300)
-    por = 300;
-  */
+   por = -300;
+   if(por>300)
+   por = 300;
+   */
   //por = constrain(por,-150.0,150.0);
   float power=(por+I*errorI); 
 
@@ -306,7 +315,7 @@ void vectorLimit(int albowAngle)
     errorI=27;
   else if(errorI<-27)
     errorI=-27;
-    
+
   //Serial.println(power);
   driveVector(windowMotor, power);//350 down, -450up 
 }
@@ -320,6 +329,8 @@ int calcWmAngle()
   int avgWmAngle=sumWmAngle*6/341+8; 
   return avgWmAngle;
 }
+
+
 
 
 

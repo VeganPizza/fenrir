@@ -46,6 +46,7 @@ int servo6Val=210;
 int servo4Val=512;
 int servo3Val=512;
 
+
 void setup() {
 
   windowMotor.attach(WM_PIN);

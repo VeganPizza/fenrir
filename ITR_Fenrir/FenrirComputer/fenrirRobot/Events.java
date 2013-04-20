@@ -17,6 +17,8 @@
 
 package fenrirRobot;
 
+import java.awt.color.CMMException;
+
 import general.Communication;
 import general.EventEnum;
 import general.RobotEvent;
@@ -94,12 +96,18 @@ public class Events {
 	// on_button_up is called when a joystick button is released
 	// button is the button number
 	public void on_button_up(RobotEvent ev){
+		ev.setIndex((short)(ev.getIndex()+1));
+		comm.sendEvent(ev);
 	}
+	
 
 	// on_button_down is called when a joystick button is pressed
 	// button is the button number
 	
 	public void on_button_down(RobotEvent ev){
+		ev.setIndex((short)(ev.getIndex()+1));
+		comm.sendEvent(ev);
+
 	}
 	
 	//when the d-pad is pressed
