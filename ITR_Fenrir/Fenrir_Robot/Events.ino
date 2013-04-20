@@ -30,6 +30,7 @@ int horizontal = 0;
 int vertical = 0;
 int grip = 0;
 
+
 void on_init(robot_queue *q) {
 
 }
@@ -95,11 +96,10 @@ void on_button_down(robot_event *ev) {
     case 8:
       grip = -1;
       break;
+    case 5:
+      reset();
+      break;
   }
-    
-  	
-
-
 }
 
 //on_motor is called when a motor speed is updated
@@ -120,23 +120,36 @@ void on_10hz_timer(robot_event *ev){
 void on_25hz_timer(robot_event *ev){
   if(horizontal <0){
     //GO LEFT
+    servo1Val=servo1Val-10;
   }
   if(horizontal > 0){
     //GO RIGHT
+    servo1Val=servo1Val+10;
   }
   if(vertical <0){
     //GO DOWN
+    servo6Val=servo6Val-10;
   }
   if(vertical >0){
     //GO UP
+    servo6Val=servo6Val+10;
   }
   if(grip<0){
     //close
+   servo3Val=servo3Val-10;
+   servo4Val=servo4Val+10;
   }
   if(grip>0){
     //open
+   servo3Val=servo3Val+10;
+   servo4Val=servo4Val-10;   
   }
-
+  
+   pose[SERVO1]=servo1Val;
+   pose[SERVO3]=servo3Val;
+   pose[SERVO4]=servo4Val;
+   pose[SERVO6]=servo6Val;
+   ax12writePose2(pose,id,4,300);
 }
 
 //place code that has to be run every 50hz
@@ -240,6 +253,93 @@ double readCurrent(){
 double readPower(){
   return (readVolts(CELL_4)+readVolts(CELL_8))/2*readCurrent();
 }
+
+//ARM
+void reset()
+{
+  vectorLimit(83);
+  pose[SERVO1] = 512;
+  pose[SERVO3] = 512;
+  pose[SERVO4] = 512;
+  pose[SERVO6] = 210;
+  ax12writePose2(pose, id, 4,300);
+}
+
+void driveVector(Servo x, int power)
+{
+  //power = 0 - power;
+  int power2=constrain(power,-400,400);
+  x.writeMicroseconds(1500+power2);
+  //-520 to 520, 0 stops.
+  //1000fullpower reverse mc to 2000full power forwward;
+  //1500 stops;
+}
+
+void moveWm(int albowAngle)
+{
+  if(albowAngle<=170&&albowAngle>=84)
+  {
+    vectorLimit(albowAngle);
+  } 
+}
+
+
+unsigned long lastT=micros();
+float errorI=0;
+void vectorLimit(int albowAngle)
+{
+  int P;
+  int I;
+  int setPoint=albowAngle;
+  int error=(setPoint-calcWmAngle());
+  if(error>0)
+  {
+    P=3;
+    I=3;
+  }
+  else if(error<=0)
+  {
+    P=6;
+    I=3;
+  }
+
+  if(abs(error)<=1)
+    errorI=0;
+
+  errorI=errorI+error*((micros()-lastT)/1000000.0);
+  float por = P*error;
+  /*
+  if(por<-300)
+    por = -300;
+  if(por>300)
+    por = 300;
+  */
+  //por = constrain(por,-150.0,150.0);
+  float power=(por+I*errorI); 
+
+  lastT=micros();
+
+  if(error==0)
+    power=0;
+  if(errorI>27)
+    errorI=27;
+  else if(errorI<-27)
+    errorI=-27;
+    
+  //Serial.println(power);
+  driveVector(windowMotor, power);//350 down, -450up 
+}
+
+
+int calcWmAngle()
+{  
+  float sumWmAngle=0;
+  for (int t=15; t>0; t--)
+    sumWmAngle+=analogRead(A0);
+  int avgWmAngle=sumWmAngle*6/341+8; 
+  return avgWmAngle;
+}
+
 
 
 

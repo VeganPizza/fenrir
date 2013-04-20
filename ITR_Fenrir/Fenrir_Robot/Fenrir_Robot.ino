@@ -22,6 +22,7 @@
 //will find link soon. it is located in the ardupiolt mega libary file somewhere 
 #include "robot.h"  //check the robot.h file to set configuration such as baud rate, 
 #include <Servo.h>
+#include <ax12.h>
 
 // All robot specific code should be placed in the events file and other files "user" created
 // Try not to change any code with files marked with a z. Those are crutial files and
@@ -32,9 +33,21 @@ robot_event event;
 
 Servo windowMotor;
 //Servo rMotor;
+int pose[4];
+int id[4] = {
+  1,3,4,6};
+#define SERVO1 0
+#define SERVO3 1
+#define SERVO4 2
+#define SERVO6 3
 
+int servo1Val=512;
+int servo6Val=210;
+int servo4Val=512;
+int servo3Val=512;
 
 void setup() {
+
   windowMotor.attach(WM_PIN);
   //rMotor.attach(MOTOR_RIGHT);
   
