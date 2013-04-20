@@ -235,25 +235,6 @@ void on_read_variable(robot_event *ev){
 void on_variable(robot_event *ev){
 }
 
-double readVolts(int cell){
-  int cell_norm = cell-54;//values of analog start at 54
-  int a = volt_table[cell_norm][1];
-  int b = volt_table[cell_norm][0];
-  double slope = 1/((double)(a-b));
-  return slope*(analogRead(cell)-b)+3.0;
-}
-double readVolts_norm(int cell){
-  if(cell==CELL_1||cell==CELL_5)
-    return readVolts(cell);
-  return readVolts(cell)-readVolts(cell-1);
-}
-double readCurrent(){
-  return ((analogRead(CURRENT)-CURRENT_VOE)/(double)1023)*5*100/.625;
-}
-double readPower(){
-  return (readVolts(CELL_4)+readVolts(CELL_8))/2*readCurrent();
-}
-
 //ARM
 void reset()
 {

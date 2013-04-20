@@ -63,14 +63,7 @@ void setup() {
   wdt_reset();             //watchdog timer reset 
 #endif
 
-#ifdef QUAD_ENCODER_
-  pinMode(encoder0PinA, INPUT); 
-  digitalWrite(encoder0PinA, HIGH);       // turn on pullup resistor
-  pinMode(encoder0PinB, INPUT); 
-  digitalWrite(encoder0PinB, HIGH);       // turn on pullup resistor
 
-  attachInterrupt(0, doEncoder, CHANGE);  // encoder pin on interrupt 0 - pin 2
-#endif
 
   // init event
   on_init(&qu);
@@ -137,25 +130,4 @@ void loop() {
 #define MIN_MOTOR_SPEED 34
 #define MAX_MOTOR_SPEED 154
 void failsafe_mode() {
-  failsafeMode = true; 
-  analogWrite(MOTOR_LEFT, map(127, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED));
-  analogWrite(MOTOR_RIGHT, map(127, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED));
-  analogWrite(11, map(127, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED));
-  digitalWrite(12, LOW);
-  digitalWrite(13, LOW);
 }
-#ifdef QUAD_ENCODER_
-void doEncoder() {
-  /* If pinA and pinB are both high or both low, it is spinning
-   * forward. If they're different, it's going backward.
-   *
-   * For more information on speeding up this process, see
-   * [Reference/PortManipulation], specifically the PIND register.
-   */
-  if (digitalRead(encoder0PinA) == digitalRead(encoder0PinB)) {
-    encoder0Pos++;
-  } else {
-    encoder0Pos--;
-  }
-}
-#endif
