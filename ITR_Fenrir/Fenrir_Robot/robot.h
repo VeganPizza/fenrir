@@ -21,7 +21,7 @@
 
 
 #define BAUD 57600
-#define SerComm Serial2    //used to make it easy to change different serial ports such on the mega you can change to Serial1 or Serial2 if you want
+#define SerComm Serial    //used to make it easy to change different serial ports such on the mega you can change to Serial1 or Serial2 if you want
 
 #define TIMER_1HZ_      //1 hz and 10 hz timers still run but user functions are not called if not defined
 #define TIMER_10HZ_ 
@@ -133,7 +133,7 @@ void failsafe_mode(robot_queue *q);
 #define CELL_8 A7
 
 #define CURRENT A8
-#define CURRENT_VOE 521
+#define CURRENT_VOE 519
 
 #define SHUTOFF_A 43
 #define SHUTOFF_B 42

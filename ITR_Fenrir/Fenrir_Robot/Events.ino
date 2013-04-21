@@ -27,6 +27,9 @@
 // Since most of it is used for failafe and other imporant aspects
 int l_stick = 127;
 int r_stick = 127;
+double current[10] = {
+  0,0,0,0,0,0,0,0,0,0};
+int current_index =0;
 // on_init runs when the program starts up for the first time
 void on_init(robot_queue *q) {
 
@@ -55,13 +58,13 @@ void on_axis_change(robot_event *ev){
   analogWrite(MOTOR_RIGHT,map(tempR,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
   /*
   Serial.print("$STICK: ");
-  Serial.print(tempL);
-  Serial.print(" ");
-  Serial.print(tempR);
-  Serial.println();
-  //rMotor.write(map(tempR,0,255,0,179));
-  //lMotor.write(map(tempL,0,255,0,179));
-  */
+   Serial.print(tempL);
+   Serial.print(" ");
+   Serial.print(tempR);
+   Serial.println();
+   //rMotor.write(map(tempR,0,255,0,179));
+   //lMotor.write(map(tempL,0,255,0,179));
+   */
 
 
 }
@@ -85,6 +88,7 @@ void on_motor(robot_event *ev) {
 
 // timer that runs each second
 void on_1hz_timer(robot_event *ev){
+
   /*
   robot_event event;
    event.index = 4;
@@ -97,8 +101,8 @@ void on_1hz_timer(robot_event *ev){
   SerComm.print(" BATT 1 ");
   SerComm.print(readVolts(CELL_8));
   SerComm.print(" CURRENT ");
-  SerComm.println(readCurrent());
-
+  SerComm.print(avgCurrent());
+  print_encod();
   /*
   for(int i = 4; i<8;++i){
    Serial.print(" CELL: ");
@@ -112,11 +116,14 @@ void on_1hz_timer(robot_event *ev){
 
 // timer that runs each 100 milliseconds
 void on_10hz_timer(robot_event *ev){
-
+  
 }
 
 //place code that has to be run every 20hz
 void on_25hz_timer(robot_event *ev){
+  if(current_index>9)
+    current_index=0;
+  current[current_index++]=readCurrent();
 
 }
 
@@ -221,6 +228,14 @@ double readCurrent(){
 double readPower(){
   return (readVolts(CELL_4)+readVolts(CELL_8))/2*readCurrent();
 }
+double avgCurrent(){
+  double sum=0;
+  for(int i = 0; i<10;++i){
+    sum+=current[i];
+  }
+  return sum/10;
+}
+
 
 
 
