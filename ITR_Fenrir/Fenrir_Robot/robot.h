@@ -133,7 +133,7 @@ void failsafe_mode(robot_queue *q);
 #define CELL_8 A7
 
 #define CURRENT A8
-#define CURRENT_VOE 519
+#define CURRENT_VOE 524
 
 #define SHUTOFF_A 43
 #define SHUTOFF_B 42
