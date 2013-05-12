@@ -154,6 +154,7 @@ void on_1hz_timer(robot_event *ev){
 void on_10hz_timer(robot_event *ev){
   if(failsafeMode){
     analogWrite(MOTOR_LEFT,147);
+    analogWrite(MOTOR_RIGHT,99);
   }
 #ifdef HOMEBREW_PID
   else{
