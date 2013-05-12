@@ -59,9 +59,9 @@ PID right_PID(&encoder0Pos,&rightOut,&actualR,0,0,0,REVERSE);
 #endif
 #define HOMEBREW_PID
 #ifdef HOMEBREW_PID
-#define PERROR_L 1
-#define DERROR_L 1
-#define IERROR_L 0
+#define PERROR_L 20
+#define DERROR_L 0
+#define IERROR_L 100
 int last_l = 0;
 int last_speed_l;
 int perror_l = 0;
@@ -69,13 +69,24 @@ int ierror_l = 0;
 int derror_l = 0;
 int target_l = 0;
 int left_out = 0;
+
+#define PERROR_R 20
+#define DERROR_R 0
+#define IERROR_R 100
+int last_r = 0;
+int last_speed_r;
+int perror_r = 0;
+int ierror_r = 0;
+int derror_r = 0;
+int target_r = 0;
+int right_out = 0;
 #endif
 
 int failsafeMode = true;
 int failsafePermanent = false;  //places the arduino in a "permanent" failsafe mode such that having a network connection will not bring it out unless ROBOT_EVENT_CMD_START is sent
 int failcount = 255;
 
-#define QUEUE_SIZE 128    //change if you need a lager queue
+#define QUEUE_SIZE 128    //change if you need a larger queue
 
 enum {
   ROBOT_EVENT_CMD                 = 0x00, // Commands

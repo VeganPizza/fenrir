@@ -38,13 +38,13 @@ void on_init(robot_queue *q) {
 // axis is the axis number, value is the position of the axis from 0-255
 // a value of 127 is center
 void on_axis_change(robot_event *ev){
-#ifdef PID_
+#ifdef HOMEBREW_PID
   if(ev->index == 1)
     l_stick = ev->value;
   if(ev->index == 2)
     r_stick = ev->value;
-  actualL = (l_stick)+(r_stick-127);
-  actualR = l_stick-(r_stick-127);
+  int actualL = (l_stick)+(r_stick-127);
+  int actualR = l_stick-(r_stick-127);
   if(actualL<0)
     actualL = 0;
   if(actualL>255)
@@ -55,12 +55,8 @@ void on_axis_change(robot_event *ev){
     actualR = 255;
 
 
-  actualR -= 127;
-  actualL -= 127;
-#endif
-#ifdef HOMEBREW_PID
-  if(ev->index == 1)
-    target_l = ev->value-127;
+  target_l = actualL - 127;
+  target_r = actualR -127;
 #endif
 
   /*
@@ -124,21 +120,21 @@ void on_1hz_timer(robot_event *ev){
   SerComm.print(leftOut);
   SerComm.print(" RightOut ");
   SerComm.print(rightOut);
-  
+
 #endif
 #ifdef HOMEBREW_PID
-  SerComm.print(" left stick ");
-  SerComm.print(target_l);
+  SerComm.print(" right stick ");
+  SerComm.print(target_r);
   SerComm.print(" last ");
-  SerComm.print(last_l);
-  SerComm.print(" left_out ");
-  SerComm.print(left_out);
+  SerComm.print(last_r);
+  SerComm.print(" right_out ");
+  SerComm.print(right_out);
   SerComm.print(" Pterm ");
-  SerComm.print(PERROR_L*perror_l);
+  SerComm.print(perror_r/PERROR_R);
   SerComm.print(" Iterm ");
-  SerComm.print(IERROR_L*ierror_l);
+  SerComm.print(ierror_r/IERROR_R);
   SerComm.print(" Dterm ");
-  SerComm.print(DERROR_L*derror_l);
+  SerComm.print(DERROR_R*derror_r);
 #endif
 
   SerComm.print("\n");
@@ -156,6 +152,17 @@ void on_1hz_timer(robot_event *ev){
 
 // timer that runs each 100 milliseconds
 void on_10hz_timer(robot_event *ev){
+  if(failsafeMode){
+    analogWrite(MOTOR_LEFT,147);
+  }
+#ifdef HOMEBREW_PID
+  else{
+    left_out = map(homebrew_pid(1)+127,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED);
+    right_out = map(homebrew_pid(0)+127,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED);
+    analogWrite(MOTOR_LEFT,left_out);
+    analogWrite(MOTOR_RIGHT,right_out);
+  }
+#endif
 
 #ifdef PID_
   left_PID.Compute();
@@ -174,8 +181,17 @@ int homebrew_pid(int side){
     ierror_l = limit(ierror_l+perror_l,-127,127);
     last_speed_l=encoder0Pos;
     encoder0Pos=0;
-    return last_l=limit(last_l+PERROR_L*perror_l+IERROR_L*ierror_l-DERROR_L*derror_l,-127,127);
+    return last_l=limit(last_l+perror_l/PERROR_L+ierror_l/IERROR_L-DERROR_L*derror_l,-127,127);
   }
+  else{
+    perror_r = target_r - encoder1Pos;
+    derror_r = encoder1Pos-last_speed_r;
+    ierror_r = 0*limit(ierror_r+perror_r,-127,127);
+    last_speed_r=encoder1Pos;
+    encoder1Pos=0;
+    return last_r=limit(last_r+perror_r/PERROR_R+ierror_r/IERROR_R-DERROR_R*derror_r,-127,127);
+  }
+    
 }
 int limit(int input, int min, int max){
   if(input<min){
@@ -197,16 +213,13 @@ void on_25hz_timer(robot_event *ev){
   current[current_index++]=readCurrent();
   /*
   if(failsafeMode){
-    SerComm.println("$FAILSAFE");
-    analogWrite(MOTOR_LEFT,map(127,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
-    analogWrite(MOTOR_RIGHT,map(127,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
-  }
-  */
+   SerComm.println("$FAILSAFE");
+   analogWrite(MOTOR_LEFT,map(127,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
+   analogWrite(MOTOR_RIGHT,map(127,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
+   }
+   */
   //else{
-#ifdef HOMEBREW_PID
-    left_out = map(homebrew_pid(1)+127,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED);
-    analogWrite(MOTOR_LEFT,left_out);
-#endif
+
   //}
 
 }
@@ -319,6 +332,7 @@ double avgCurrent(){
   }
   return sum/10;
 }
+
 
 
 
