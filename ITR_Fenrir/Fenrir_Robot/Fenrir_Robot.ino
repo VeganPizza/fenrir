@@ -152,7 +152,7 @@ void doEncoder0() {
   }
 }
 void doEncoder1() {
-  if (digitalRead(encoder1PinA) == digitalRead(encoder1PinB)) {
+  if (digitalRead(encoder1PinA) != digitalRead(encoder1PinB)) {
     encoder1Pos++;
   } else {
     encoder1Pos--;

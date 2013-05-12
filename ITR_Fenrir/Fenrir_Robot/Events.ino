@@ -99,9 +99,9 @@ void on_1hz_timer(robot_event *ev){
   SerComm.print(" CURRENT ");
   SerComm.print(avgCurrent());
   SerComm.print(" encod 0 ");
-  SerComm.print(encod0Pos);
+  SerComm.print(encoder0Pos);
   SerComm.print(" encod 1 ");
-  SerComm.println(encod1Pos);
+  SerComm.println(encoder1Pos);
   /*
   for(int i = 4; i<8;++i){
    Serial.print(" CELL: ");
