@@ -55,8 +55,14 @@ void setup() {
   digitalWrite(encoder0PinA, HIGH);       // turn on pullup resistor
   pinMode(encoder0PinB, INPUT); 
   digitalWrite(encoder0PinB, HIGH);       // turn on pullup resistor
+  
+  pinMode(encoder1PinA, INPUT); 
+  digitalWrite(encoder1PinA, HIGH);       // turn on pullup resistor
+  pinMode(encoder1PinB, INPUT); 
+  digitalWrite(encoder1PinB, HIGH);       // turn on pullup resistor
 
-  attachInterrupt(0, doEncoder, CHANGE);  // encoder pin on interrupt 0 - pin 2
+  attachInterrupt(0, doEncoder0, CHANGE);  // encoder pin on interrupt 0 - pin 2
+  attachInterrupt(1, doEncoder1, CHANGE); // encoder pin on int 1 - pin 3
 #endif
 
   // init event
@@ -132,7 +138,7 @@ void failsafe_mode() {
   digitalWrite(13, LOW);
 }
 #ifdef QUAD_ENCODER_
-void doEncoder() {
+void doEncoder0() {
   /* If pinA and pinB are both high or both low, it is spinning
    * forward. If they're different, it's going backward.
    *
@@ -145,4 +151,11 @@ void doEncoder() {
     encoder0Pos--;
   }
 }
+void doEncoder1() {
+  if (digitalRead(encoder1PinA) == digitalRead(encoder1PinB)) {
+    encoder1Pos++;
+  } else {
+    encoder1Pos--;
+  }
+} 
 #endif

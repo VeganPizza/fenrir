@@ -35,12 +35,15 @@
 #include <avr/wdt.h>      //watchdog library timer loop resets the watch dog
 #endif
 //Adding quad encoder support
-//#define QUAD_ENCODER_
+#define QUAD_ENCODER_
 
 #ifdef  QUAD_ENCODER_
   #define encoder0PinA  2
-  #define encoder0PinB  4
-  volatile unsigned int encoder0Pos = 0;
+  #define encoder0PinB  5
+  #define encoder1PinA  3
+  #define encoder1PinB  4
+  volatile int encoder0Pos = 0;
+  volatile int encoder1Pos = 0;
 #endif
 
 int failsafeMode = true;
