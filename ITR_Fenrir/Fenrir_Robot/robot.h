@@ -1,3 +1,5 @@
+#include "PID.h"
+
 //    events.h - API description for end user functions
 //    Copyright (C) 2011 Illinois Institute of Technology Robotics
 //      <robotics@iit.edu>
@@ -28,7 +30,7 @@
 #define TIMER_25HZ_     //uncomment to run code at the specifed hz
 //#define TIMER_50HZ_ 
 //#define TIMER_100HZ_ 
-#define POWER_LED_        //blinks a led implemented in timer loop and pin specifed below
+//#define POWER_LED_        //blinks a led implemented in timer loop and pin specifed below
 
 //#define WATCHDOG_       //To use a Watchdog timer (to use a watchdog timer, optiboot bootloader is needed or uno)
 #ifdef WATCHDOG_
@@ -42,8 +44,18 @@
   #define encoder0PinB  5
   #define encoder1PinA  3
   #define encoder1PinB  4
-  volatile int encoder0Pos = 0;
-  volatile int encoder1Pos = 0;
+  double encoder0Pos = 0;
+  double encoder1Pos = 0;
+#endif
+
+#define PID_
+#ifdef PID_
+  double leftOut;
+  double rightOut;
+  double actualL = 127;
+  double actualR = 127;
+  PID left_PID(&encoder0Pos,&leftOut,&actualL,1,1,1,DIRECT);
+  PID right_PID(&encoder1Pos,&rightOut,&actualR,1,1,1,DIRECT);
 #endif
 
 int failsafeMode = true;
@@ -120,6 +132,9 @@ void failsafe_mode(robot_queue *q);
 
 #define MOTOR_RIGHT 11
 #define MOTOR_LEFT  9
+
+#define MIN_MOTOR_SPEED 34
+#define MAX_MOTOR_SPEED 154
 
 #define MOTOR_RIGHT_PIN_A 3
 #define MOTOR_RIGHT_PIN_B 9

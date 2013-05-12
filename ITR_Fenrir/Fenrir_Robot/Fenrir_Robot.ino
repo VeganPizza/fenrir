@@ -34,6 +34,8 @@ robot_event event;
 //Servo rMotor;
 
 
+
+
 void setup() {
   //lMotor.attach(MOTOR_LEFT);
   //rMotor.attach(MOTOR_RIGHT);
@@ -63,6 +65,15 @@ void setup() {
 
   attachInterrupt(0, doEncoder0, CHANGE);  // encoder pin on interrupt 0 - pin 2
   attachInterrupt(1, doEncoder1, CHANGE); // encoder pin on int 1 - pin 3
+#endif
+
+#ifdef PID_
+  leftOut = map(127,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED);
+  rightOut = map(127,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED);
+  left_PID.SetOutputLimits(MIN_MOTOR_SPEED,MAX_MOTOR_SPEED);
+  right_PID.SetOutputLimits(MIN_MOTOR_SPEED,MAX_MOTOR_SPEED);
+  left_PID.SetMode(AUTOMATIC);
+  right_PID.SetMode(AUTOMATIC);
 #endif
 
   // init event
@@ -127,8 +138,7 @@ void loop() {
 
 //Place code here to put the robot in a safe state(i.e stopping the motors ..)
 //failsafe_mode will run at 10hz untill communications is restored 
-#define MIN_MOTOR_SPEED 34
-#define MAX_MOTOR_SPEED 154
+
 void failsafe_mode() {
   failsafeMode = true; 
   analogWrite(MOTOR_LEFT, map(127, 0, 255, MIN_MOTOR_SPEED, MAX_MOTOR_SPEED));

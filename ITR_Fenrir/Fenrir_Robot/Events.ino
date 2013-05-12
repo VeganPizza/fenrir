@@ -43,19 +43,20 @@ void on_axis_change(robot_event *ev){
     l_stick = ev->value;
   if(ev->index == 2)
     r_stick = ev->value;
-  int tempL = (l_stick)+(r_stick-127);
-  int tempR = l_stick-(r_stick-127);
-  if(tempL<0)
-    tempL = 0;
-  if(tempL>255)
-    tempL = 255;
-  if(tempR<0)
-    tempR = 0;
-  if(tempR>255)
-    tempR = 255;
+  actualL = (l_stick)+(r_stick-127);
+  actualR = l_stick-(r_stick-127);
+  if(actualL<0)
+    actualL = 0;
+  if(actualL>255)
+    actualL = 255;
+  if(actualR<0)
+    actualR = 0;
+  if(actualR>255)
+    actualR = 255;
 
-  analogWrite(MOTOR_LEFT, map(tempL,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
-  analogWrite(MOTOR_RIGHT,map(tempR,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
+
+  actualR = map(actualR,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED);
+  actualL = map(actualL,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED);
   /*
   Serial.print("$STICK: ");
    Serial.print(tempL);
@@ -68,6 +69,8 @@ void on_axis_change(robot_event *ev){
 
 
 }
+
+
 
 // on_button_up is called when a joystick button is released
 // button is the button number
@@ -115,7 +118,10 @@ void on_1hz_timer(robot_event *ev){
 
 // timer that runs each 100 milliseconds
 void on_10hz_timer(robot_event *ev){
-  
+  left_PID.Compute();
+  right_PID.Compute();
+  analogWrite(MOTOR_LEFT,leftOut);
+  analogWrite(MOTOR_RIGHT,rightOut); 
 }
 
 //place code that has to be run every 20hz
@@ -234,6 +240,7 @@ double avgCurrent(){
   }
   return sum/10;
 }
+
 
 
 
