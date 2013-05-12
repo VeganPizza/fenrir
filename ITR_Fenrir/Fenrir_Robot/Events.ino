@@ -99,6 +99,7 @@ void on_1hz_timer(robot_event *ev){
    event.command=ROBOT_EVENT_VAR;
    send_event(&event);
    */
+  SerComm.print("$");
   SerComm.print(" CURRENT ");
   SerComm.print(avgCurrent());
   SerComm.print(" encod 0 ");
