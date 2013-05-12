@@ -38,7 +38,7 @@ void on_init(robot_queue *q) {
 // axis is the axis number, value is the position of the axis from 0-255
 // a value of 127 is center
 void on_axis_change(robot_event *ev){
-
+#ifdef PID_
   if(ev->index == 1)
     l_stick = ev->value;
   if(ev->index == 2)
@@ -55,8 +55,14 @@ void on_axis_change(robot_event *ev){
     actualR = 255;
 
 
-  actualR = map(actualR,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED);
-  actualL = map(actualL,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED);
+  actualR -= 127;
+  actualL -= 127;
+#endif
+#ifdef HOMEBREW_PID
+  if(ev->index == 1)
+    target_l = ev->value-127;
+#endif
+
   /*
   Serial.print("$STICK: ");
    Serial.print(tempL);
@@ -100,12 +106,43 @@ void on_1hz_timer(robot_event *ev){
    send_event(&event);
    */
   SerComm.print("$");
+
   SerComm.print(" CURRENT ");
   SerComm.print(avgCurrent());
+#ifdef QUAD_ENCODER_
   SerComm.print(" encod 0 ");
   SerComm.print(encoder0Pos);
   SerComm.print(" encod 1 ");
-  SerComm.println(encoder1Pos);
+  SerComm.print(encoder1Pos);
+#endif
+#ifdef PID_
+  SerComm.print(" actualL ");
+  SerComm.print(actualL);
+  SerComm.print(" actualR ");
+  SerComm.print(actualR);
+  SerComm.print(" LeftOut ");
+  SerComm.print(leftOut);
+  SerComm.print(" RightOut ");
+  SerComm.print(rightOut);
+  
+#endif
+#ifdef HOMEBREW_PID
+  SerComm.print(" left stick ");
+  SerComm.print(target_l);
+  SerComm.print(" last ");
+  SerComm.print(last_l);
+  SerComm.print(" left_out ");
+  SerComm.print(left_out);
+  SerComm.print(" Pterm ");
+  SerComm.print(PERROR_L*perror_l);
+  SerComm.print(" Iterm ");
+  SerComm.print(IERROR_L*ierror_l);
+  SerComm.print(" Dterm ");
+  SerComm.print(DERROR_L*derror_l);
+#endif
+
+  SerComm.print("\n");
+
   /*
   for(int i = 4; i<8;++i){
    Serial.print(" CELL: ");
@@ -119,17 +156,58 @@ void on_1hz_timer(robot_event *ev){
 
 // timer that runs each 100 milliseconds
 void on_10hz_timer(robot_event *ev){
+
+#ifdef PID_
   left_PID.Compute();
   right_PID.Compute();
-  analogWrite(MOTOR_LEFT,leftOut);
-  analogWrite(MOTOR_RIGHT,rightOut); 
+  analogWrite(MOTOR_LEFT,map(leftOut,-127,127,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
+  analogWrite(MOTOR_RIGHT,map(rightOut,-127,127,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED)); 
+  encoder0Pos=0;
+  encoder1Pos=0;
+#endif
 }
+#ifdef HOMEBREW_PID
+int homebrew_pid(int side){
+  if(side){
+    perror_l = target_l - encoder0Pos;
+    derror_l = encoder0Pos-last_speed_l;
+    ierror_l = limit(ierror_l+perror_l,-127,127);
+    last_speed_l=encoder0Pos;
+    encoder0Pos=0;
+    return last_l=limit(last_l+PERROR_L*perror_l+IERROR_L*ierror_l-DERROR_L*derror_l,-127,127);
+  }
+}
+int limit(int input, int min, int max){
+  if(input<min){
+    return min;
+  }
+  if(input>max){
+    return max;
+  }
+  return input;
+}
+#endif
+
 
 //place code that has to be run every 20hz
 void on_25hz_timer(robot_event *ev){
+
   if(current_index>9)
     current_index=0;
   current[current_index++]=readCurrent();
+  /*
+  if(failsafeMode){
+    SerComm.println("$FAILSAFE");
+    analogWrite(MOTOR_LEFT,map(127,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
+    analogWrite(MOTOR_RIGHT,map(127,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED));
+  }
+  */
+  //else{
+#ifdef HOMEBREW_PID
+    left_out = map(homebrew_pid(1)+127,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED);
+    analogWrite(MOTOR_LEFT,left_out);
+#endif
+  //}
 
 }
 
@@ -241,6 +319,11 @@ double avgCurrent(){
   }
   return sum/10;
 }
+
+
+
+
+
 
 
 

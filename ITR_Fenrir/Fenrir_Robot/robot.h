@@ -40,22 +40,35 @@
 #define QUAD_ENCODER_
 
 #ifdef  QUAD_ENCODER_
-  #define encoder0PinA  2
-  #define encoder0PinB  5
-  #define encoder1PinA  3
-  #define encoder1PinB  4
-  double encoder0Pos = 0;
-  double encoder1Pos = 0;
+#define encoder0PinA  2
+#define encoder0PinB  5
+#define encoder1PinA  3
+#define encoder1PinB  4
+double encoder0Pos = 0;
+double encoder1Pos = 0;
 #endif
 
-#define PID_
+//#define PID_
 #ifdef PID_
-  double leftOut;
-  double rightOut;
-  double actualL = 127;
-  double actualR = 127;
-  PID left_PID(&encoder0Pos,&leftOut,&actualL,1,1,1,DIRECT);
-  PID right_PID(&encoder1Pos,&rightOut,&actualR,1,1,1,DIRECT);
+double leftOut;
+double rightOut;
+double actualL = 0;
+double actualR = 0;
+PID left_PID(&encoder1Pos,&leftOut,&actualL,1,0,0,REVERSE);
+PID right_PID(&encoder0Pos,&rightOut,&actualR,0,0,0,REVERSE);
+#endif
+#define HOMEBREW_PID
+#ifdef HOMEBREW_PID
+#define PERROR_L 1
+#define DERROR_L 1
+#define IERROR_L 0
+int last_l = 0;
+int last_speed_l;
+int perror_l = 0;
+int ierror_l = 0;
+int derror_l = 0;
+int target_l = 0;
+int left_out = 0;
 #endif
 
 int failsafeMode = true;
@@ -65,66 +78,68 @@ int failcount = 255;
 #define QUEUE_SIZE 128    //change if you need a lager queue
 
 enum {
-    ROBOT_EVENT_CMD                 = 0x00, // Commands
-    ROBOT_EVENT_CMD_NOOP            = 0x01, // No op
-    ROBOT_EVENT_CMD_START           = 0x02, // Start
-    ROBOT_EVENT_CMD_STOP            = 0x03, // Stop
-    ROBOT_EVENT_CMD_REBOOT          = 0x04, // Reboot
-    ROBOT_EVENT_CMD_SHUTDOWN        = 0x05, // Shutdown
-    ROBOT_EVENT_CMD_FAILSAFE        = 0x06, // Failsafe
-    
-    ROBOT_EVENT_NET                 = 0x10, // Remote information
-    ROBOT_EVENT_NET_STATUS_OK       = 0x11, // OK
-    ROBOT_EVENT_NET_STATUS_ERR      = 0x12, // Error
-    ROBOT_EVENT_NET_STATUS_NOTICE   = 0x13, // Notice
-    
-    ROBOT_EVENT_JOY_AXIS            = 0x20, // Joystick movements
-    ROBOT_EVENT_JOY_BUTTON          = 0x30, // Button presses
-    ROBOT_EVENT_JOY_HAT             = 0x31, // Hat movement/D-pad
-    ROBOT_EVENT_JOY_STATUS          = 0x32, // Joystick Status
-    
-    ROBOT_EVENT_TIMER		    = 0x40, // Timer events
-    ROBOT_EVENT_MOTOR	   	    = 0x50, // Motor events
-    ROBOT_EVENT_ADC		    = 0x60, // ADC events
-    ROBOT_EVENT_SET_VAR		    = 0x70, // Set variable events
-    ROBOT_EVENT_READ_VAR	    = 0x80, // Read variable events
-    ROBOT_EVENT_VAR                 = 0x90, // Send variable
+  ROBOT_EVENT_CMD                 = 0x00, // Commands
+  ROBOT_EVENT_CMD_NOOP            = 0x01, // No op
+  ROBOT_EVENT_CMD_START           = 0x02, // Start
+  ROBOT_EVENT_CMD_STOP            = 0x03, // Stop
+  ROBOT_EVENT_CMD_REBOOT          = 0x04, // Reboot
+  ROBOT_EVENT_CMD_SHUTDOWN        = 0x05, // Shutdown
+  ROBOT_EVENT_CMD_FAILSAFE        = 0x06, // Failsafe
+
+  ROBOT_EVENT_NET                 = 0x10, // Remote information
+  ROBOT_EVENT_NET_STATUS_OK       = 0x11, // OK
+  ROBOT_EVENT_NET_STATUS_ERR      = 0x12, // Error
+  ROBOT_EVENT_NET_STATUS_NOTICE   = 0x13, // Notice
+
+  ROBOT_EVENT_JOY_AXIS            = 0x20, // Joystick movements
+  ROBOT_EVENT_JOY_BUTTON          = 0x30, // Button presses
+  ROBOT_EVENT_JOY_HAT             = 0x31, // Hat movement/D-pad
+  ROBOT_EVENT_JOY_STATUS          = 0x32, // Joystick Status
+
+  ROBOT_EVENT_TIMER		    = 0x40, // Timer events
+  ROBOT_EVENT_MOTOR	   	    = 0x50, // Motor events
+  ROBOT_EVENT_ADC		    = 0x60, // ADC events
+  ROBOT_EVENT_SET_VAR		    = 0x70, // Set variable events
+  ROBOT_EVENT_READ_VAR	    = 0x80, // Read variable events
+  ROBOT_EVENT_VAR                 = 0x90, // Send variable
 };
 
 //controller definitions 
 int CON_XAXIS,
-    CON_YAXIS,
-    CON_RAXIS,
-    CON_X1AXIS,
-    CON_Y1AXIS,
-    CON_TURBO1,
-    CON_TURBO2,
-    CON_ARM_UP,
-    CON_ARM_DOWN,
-    CON_GRIP,
-    CON_FRONT,
-    CON_EXTRA,
-    CON_REAR;
-    
+CON_YAXIS,
+CON_RAXIS,
+CON_X1AXIS,
+CON_Y1AXIS,
+CON_TURBO1,
+CON_TURBO2,
+CON_ARM_UP,
+CON_ARM_DOWN,
+CON_GRIP,
+CON_FRONT,
+CON_EXTRA,
+CON_REAR;
+
 //pin definitions
 int PIN_MOTOR1,
-    PIN_MOTOR2,
-    PIN_MOTOR3,
-    PIN_MOTOR4,
-    POWER_LED_PIN;    //Sets which pin should flash to indicate powered on 
-    
-typedef struct {
-	unsigned char command; // command 
-	unsigned char index; // eg the axis number or button number
-	unsigned int value; // eg the axis value or button value
-} robot_event;
+PIN_MOTOR2,
+PIN_MOTOR3,
+PIN_MOTOR4,
+POWER_LED_PIN;    //Sets which pin should flash to indicate powered on 
 
 typedef struct {
-	robot_event array[QUEUE_SIZE];
-	int head_index;
-	int tail_index;
-	int length;
-} robot_queue;
+  unsigned char command; // command 
+  unsigned char index; // eg the axis number or button number
+  unsigned int value; // eg the axis value or button value
+} 
+robot_event;
+
+typedef struct {
+  robot_event array[QUEUE_SIZE];
+  int head_index;
+  int tail_index;
+  int length;
+} 
+robot_queue;
 
 void failsafe_mode(robot_queue *q);
 #endif // !EVENTS_H
@@ -167,16 +182,34 @@ double readVolts(int cell);
 double readVolts_norm(int cell);
 double readCurrent();
 double readPower();
-    
-                      //3v, 4v
-int volt_table[8][2]={{631,837},//Cell 1
-                      {316,417},//Cell 2
-                      {197,261},//Cell 3
-                      {147,195},//Cell 4
-                      {634,835},//Cell 5
-                      {312,412},//Cell 6
-                      {197,261},//Cell 7
-                      {146,194}};//Cell 8
+
+//3v, 4v
+int volt_table[8][2]={
+  {
+    631,837  }
+  ,//Cell 1
+  {
+    316,417  }
+  ,//Cell 2
+  {
+    197,261  }
+  ,//Cell 3
+  {
+    147,195  }
+  ,//Cell 4
+  {
+    634,835  }
+  ,//Cell 5
+  {
+    312,412  }
+  ,//Cell 6
+  {
+    197,261  }
+  ,//Cell 7
+  {
+    146,194  }
+};//Cell 8
+
 
 
 

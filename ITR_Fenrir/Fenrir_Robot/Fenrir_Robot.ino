@@ -68,10 +68,10 @@ void setup() {
 #endif
 
 #ifdef PID_
-  leftOut = map(127,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED);
-  rightOut = map(127,0,255,MIN_MOTOR_SPEED,MAX_MOTOR_SPEED);
-  left_PID.SetOutputLimits(MIN_MOTOR_SPEED,MAX_MOTOR_SPEED);
-  right_PID.SetOutputLimits(MIN_MOTOR_SPEED,MAX_MOTOR_SPEED);
+  leftOut =0;
+  rightOut =0;
+  left_PID.SetOutputLimits(-127,127);
+  right_PID.SetOutputLimits(-127,127);
   left_PID.SetMode(AUTOMATIC);
   right_PID.SetMode(AUTOMATIC);
 #endif
